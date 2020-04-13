@@ -21,8 +21,8 @@ const decodeToken = (token) =>
             if (err) reject({status: 403, err})
             else
             {
-                const {password, _id} = payload
-                userController.verifyToken({password, _id})
+                const {phone, _id} = payload
+                userController.verifyToken({phone, _id})
                     .then((result) => resolve(result.user))
                     .catch((result) => reject({status: result.status, err: result.err}))
             }

@@ -5,7 +5,13 @@ const addHeaderAndCheckPermissions = (app) =>
     app.use((req, res, next) =>
     {
         res.setHeader("Access-Control-Allow-Origin", "*")
-        if (req.originalUrl === "/")
+        if (
+            req.originalUrl === "/" ||
+            (req.originalUrl === "/user/" && req.method === "POST") ||
+            (req.originalUrl === "/user/phone_check/") ||
+            (req.originalUrl === "/user/login-sign-up/") ||
+            (req.originalUrl === "/code/")
+        )
         {
             if (req.headers.authorization)
             {

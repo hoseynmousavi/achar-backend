@@ -12,7 +12,7 @@ const transporter = nodeMailer.createTransport({
 const sendMail = ({receivers, subject, text, html}) =>
 {
     transporter.sendMail({
-        from: "Kred Info", // sender address
+        from: "Info", // sender address
         to: receivers, // list of receivers | string split by comma
         subject: subject, // Subject line
         text: text, // plain text body
