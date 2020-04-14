@@ -50,7 +50,7 @@ const verifyCode = ({phone, code}) =>
                 else if (takenCode)
                 {
                     resolve({status: 200})
-                    verificationCode.delete({phone}, (err) => console.log(err ? err : "deleted code successfully."))
+                    verificationCode.remove({phone}, (err) => console.log(err ? err : "deleted code successfully."))
                 }
                 else reject({status: 404, err: "code verification failed!"})
             })
