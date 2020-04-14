@@ -7,9 +7,9 @@ const addHeaderAndCheckPermissions = (app) =>
         res.setHeader("Access-Control-Allow-Origin", "*")
         if (
             req.originalUrl === "/" ||
-            (req.originalUrl.slice(0, 5) === "/week" && req.method === "GET") ||
-            (req.originalUrl.slice(0, 5) === "/book" && req.method === "GET") ||
-            (req.originalUrl.slice(0, 9) === "/question" && req.method === "GET") ||
+            // (req.originalUrl.slice(0, 5) === "/week" && req.method === "GET") ||
+            // (req.originalUrl.slice(0, 5) === "/book" && req.method === "GET") ||
+            // (req.originalUrl.slice(0, 9) === "/question" && req.method === "GET") ||
             (req.originalUrl.slice(0, 17) === "/user/phone_check" && req.method === "POST") ||
             (req.originalUrl.slice(0, 19) === "/user/login-sign-up" && req.method === "POST") ||
             (req.originalUrl.slice(0, 5) === "/code" && req.method === "POST")

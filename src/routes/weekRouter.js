@@ -20,6 +20,9 @@ const weekRouter = (app) =>
 
     app.route("/question/:week_id")
         .get(weekController.getWeekQuestions)
+
+    app.route("/answer")
+        .post(weekController.addAnswer)
 }
 
 export default weekRouter
