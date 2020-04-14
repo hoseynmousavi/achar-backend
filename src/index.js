@@ -9,6 +9,7 @@ import data from "./data"
 import notFoundRooter from "./routes/notFoundRouter"
 import addHeaderAndCheckPermissions from "./functions/addHeaderAndCheckPermissions"
 import verificationCodeRouter from "./routes/verificationCodeRouter"
+import weekRouter from "./routes/weekRouter"
 
 
 // Normal Things Never Leave Us Alone ...
@@ -28,6 +29,7 @@ addHeaderAndCheckPermissions(app)
 // Routing Shits
 rootRouter(app)
 userRouter(app)
+weekRouter(app)
 verificationCodeRouter(app)
 notFoundRooter(app) // & at the end
 

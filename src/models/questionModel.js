@@ -5,9 +5,10 @@ const schema = mongoose.Schema
 const questionModel = new schema({
     book_id: {
         type: schema.Types.ObjectId,
+        index: true,
         required: "Enter book_id!",
     },
-    question: {
+    question_text: {
         type: String,
         required: "Enter question!",
     },

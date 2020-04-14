@@ -5,6 +5,7 @@ const schema = mongoose.Schema
 const bookModel = new schema({
     week_id: {
         type: schema.Types.ObjectId,
+        index: true,
         required: "Enter week_id!",
     },
     name: {
