@@ -129,23 +129,38 @@ const addForLottery = (req, res) =>
     const {book_id} = req.body
     if (user_id && book_id)
     {
-        question.find({book_id}, (err, questions) =>
+        book.findById(book_id, (err, takenBook) =>
         {
             if (err) res.status(400).send(err)
+            else if (!takenBook) res.status(404).send({message: "book not found!"})
             else
             {
-                answer.find({user_id, is_correct: true, question_id: {$in: questions.reduce((sum, question) => [...sum, question.toJSON()._id], [])}}, (err, answers) =>
+                week.findById(takenBook.toJSON().week_id, (err, takenWeek) =>
                 {
-                    if (questions.length === answers.length)
+                    question.find({book_id}, (err, questions) =>
                     {
-                        const newLottery = new lottery({user_id, book_id, create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir"))})
-                        newLottery.save((err, createdLottery) =>
+                        if (err) res.status(400).send(err)
+                        else
                         {
-                            if (err) res.status(400).send(err)
-                            else res.send(createdLottery)
-                        })
-                    }
-                    else res.status(403).send({message: "you weren't correct for all questions!"})
+                            answer.find({user_id, is_correct: true, question_id: {$in: questions.reduce((sum, question) => [...sum, question.toJSON()._id], [])}}, (err, answers) =>
+                            {
+                                if (questions.length === answers.length)
+                                {
+                                    if (new Date() > takenWeek.toJSON().end_date) res.status(201).send({message: "all right, but late!"})
+                                    else
+                                    {
+                                        const newLottery = new lottery({user_id, book_id, create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir"))})
+                                        newLottery.save((err, createdLottery) =>
+                                        {
+                                            if (err) res.status(400).send(err)
+                                            else res.send(createdLottery)
+                                        })
+                                    }
+                                }
+                                else res.status(403).send({message: "you weren't correct for all questions!"})
+                            })
+                        }
+                    })
                 })
             }
         })
