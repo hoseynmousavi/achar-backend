@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 import userModel from "../models/userModel"
 import tokenHelper from "../functions/tokenHelper"
 import verificationCodeController from "./verificationCodeController"
+import numberCorrection from "../functions/numberCorrection"
 
 const user = mongoose.model("user", userModel)
 
@@ -34,7 +35,7 @@ const loginSignUp = (req, res) =>
                 })
                 .catch(() =>
                 {
-                    const newUser = new user({phone, name})
+                    const newUser = new user({phone, name, create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir"))})
                     newUser.save((err, createdUser) =>
                     {
                         if (err) res.status(400).send(err)

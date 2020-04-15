@@ -15,6 +15,10 @@ const weekModel = new schema({
         type: String,
         required: "Enter name!",
     },
+    create_persian_date: {
+        type: String,
+        required: "Enter create_persian_date!",
+    },
     created_date: {
         type: Date,
         default: Date.now,

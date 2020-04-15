@@ -20,6 +20,10 @@ const userModel = new schema({
     name: {
         type: String,
     },
+    create_persian_date: {
+        type: String,
+        required: "Enter create_persian_date!",
+    },
     created_date: {
         type: Date,
         default: Date.now,

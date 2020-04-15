@@ -4,6 +4,7 @@ import bookModel from "../models/bookModel"
 import questionModel from "../models/questionModel"
 import answerModel from "../models/answerModel"
 import lotteryModel from "../models/lotteryModel"
+import numberCorrection from "../functions/numberCorrection"
 
 const week = mongoose.model("week", weekModel)
 const book = mongoose.model("book", bookModel)
@@ -101,7 +102,7 @@ const addAnswer = (req, res) =>
             {
                 let is_correct = false
                 if (takenQuestion.toJSON().correct_answer === parseInt(user_answer)) is_correct = true
-                const newAnswer = new answer({question_id, user_answer, user_id, is_correct})
+                const newAnswer = new answer({question_id, user_answer, user_id, is_correct, create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir"))})
                 newAnswer.save((err, createdAnswer) =>
                 {
                     if (err) res.status(400).send(err)
@@ -128,7 +129,7 @@ const addForLottery = (req, res) =>
                 {
                     if (questions.length === answers.length)
                     {
-                        const newLottery = new lottery({user_id, book_id})
+                        const newLottery = new lottery({user_id, book_id, create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir"))})
                         newLottery.save((err, createdLottery) =>
                         {
                             if (err) res.status(400).send(err)
@@ -152,7 +153,7 @@ const addWeek = (req, res) =>
         if (start_date && name)
         {
             const end_date = req.body.end_date ? new Date().setDate(new Date().getDate() + parseInt(req.body.end_date)) : new Date().setDate(new Date().getDate() + (parseInt(start_date) + 7))
-            const newWeek = new week({name, start_date: new Date().setDate(new Date().getDate() + parseInt(start_date)), end_date})
+            const newWeek = new week({name, start_date: new Date().setDate(new Date().getDate() + parseInt(start_date)), end_date, create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir"))})
             newWeek.save((err, createdWeek) =>
             {
                 if (err) res.status(400).send(err)
@@ -185,7 +186,7 @@ const addBook = (req, res) =>
                         if (err) console.log(err)
                         else
                         {
-                            const newBook = new book({name, week_id, picture: `/media/pictures/${pictureName}`, file: `/media/files/${fileName}`})
+                            const newBook = new book({name, week_id, picture: `/media/pictures/${pictureName}`, file: `/media/files/${fileName}`, create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir"))})
                             newBook.save((err, createdBook) =>
                             {
                                 if (err) res.status(400).send(err)

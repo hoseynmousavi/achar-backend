@@ -13,6 +13,10 @@ const lotteryModel = new schema({
         index: true,
         required: "Enter book_id!",
     },
+    create_persian_date: {
+        type: String,
+        required: "Enter create_persian_date!",
+    },
     created_date: {
         type: Date,
         default: Date.now,

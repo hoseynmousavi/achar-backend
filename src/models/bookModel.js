@@ -20,6 +20,10 @@ const bookModel = new schema({
         type: String,
         required: "Enter file!",
     },
+    create_persian_date: {
+        type: String,
+        required: "Enter create_persian_date!",
+    },
     created_date: {
         type: Date,
         default: Date.now,
