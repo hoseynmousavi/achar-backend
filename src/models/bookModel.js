@@ -12,6 +12,9 @@ const bookModel = new schema({
         type: String,
         required: "Enter name!",
     },
+    description: {
+        type: String,
+    },
     picture: {
         type: String,
         required: "Enter picture!",

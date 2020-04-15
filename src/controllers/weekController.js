@@ -68,21 +68,30 @@ const getBookById = (req, res) =>
 
 const getBookQuestions = (req, res) =>
 {
-    question.find({book_id: req.params.book_id}, (err, questions) =>
+    const user_id = req.headers.authorization._id
+    book.findById(req.params.book_id, (err, takenBook) =>
     {
         if (err) res.status(400).send(err)
+        else if (!takenBook) res.status(404).send({message: "book not found!"})
         else
         {
-            answer.find({question_id: {$in: questions.reduce((sum, question) => [...sum, question.toJSON()._id], [])}}, (err, answers) =>
+            question.find({book_id: req.params.book_id}, (err, questions) =>
             {
-                const questionsObject = questions.reduce((sum, question) => ({...sum, [question._id]: question.toJSON()}), {})
-                const answersObject = answers.reduce((sum, answer) => ({...sum, [answer.question_id]: answer.toJSON()}), {})
-                questions.forEach(question =>
+                if (err) res.status(400).send(err)
+                else
                 {
-                    if (answersObject[question._id]) questionsObject[question._id].user_answer = answersObject[question._id].user_answer
-                    else delete questionsObject[question._id].correct_answer
-                })
-                res.send({questions: Object.values(questionsObject), questions_count: questions.length, answers_count: answers.length})
+                    answer.find({user_id, question_id: {$in: questions.reduce((sum, question) => [...sum, question.toJSON()._id], [])}}, (err, answers) =>
+                    {
+                        const questionsObject = questions.reduce((sum, question) => ({...sum, [question._id]: question.toJSON()}), {})
+                        const answersObject = answers.reduce((sum, answer) => ({...sum, [answer.question_id]: answer.toJSON()}), {})
+                        questions.forEach(question =>
+                        {
+                            if (answersObject[question._id]) questionsObject[question._id].user_answer = answersObject[question._id].user_answer
+                            else delete questionsObject[question._id].correct_answer
+                        })
+                        res.send({book: takenBook.toJSON(), questions: Object.values(questionsObject), questions_count: questions.length, answers_count: answers.length})
+                    })
+                }
             })
         }
     })
@@ -169,7 +178,7 @@ const addBook = (req, res) =>
 {
     if (req.headers.authorization.role === "admin")
     {
-        const {week_id, name} = req.body
+        const {week_id, name, description} = req.body
         const picture = req.files ? req.files.picture : null
         const file = req.files ? req.files.file : null
         if (week_id && name && picture && file)
@@ -186,7 +195,13 @@ const addBook = (req, res) =>
                         if (err) console.log(err)
                         else
                         {
-                            const newBook = new book({name, week_id, picture: `/media/pictures/${pictureName}`, file: `/media/files/${fileName}`, create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir"))})
+                            const newBook = new book({
+                                name,
+                                description,
+                                week_id, picture: `/media/pictures/${pictureName}`,
+                                file: `/media/files/${fileName}`,
+                                create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir")),
+                            })
                             newBook.save((err, createdBook) =>
                             {
                                 if (err) res.status(400).send(err)
