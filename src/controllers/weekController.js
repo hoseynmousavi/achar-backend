@@ -134,7 +134,7 @@ const addForLottery = (req, res) =>
             if (err) res.status(400).send(err)
             else
             {
-                answer.find({is_correct: true, question_id: {$in: questions.reduce((sum, question) => [...sum, question.toJSON()._id], [])}}, (err, answers) =>
+                answer.find({user_id, is_correct: true, question_id: {$in: questions.reduce((sum, question) => [...sum, question.toJSON()._id], [])}}, (err, answers) =>
                 {
                     if (questions.length === answers.length)
                     {
