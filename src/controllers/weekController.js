@@ -3,11 +3,13 @@ import weekModel from "../models/weekModel"
 import bookModel from "../models/bookModel"
 import questionModel from "../models/questionModel"
 import answerModel from "../models/answerModel"
+import lotteryModel from "../models/lotteryModel"
 
 const week = mongoose.model("week", weekModel)
 const book = mongoose.model("book", bookModel)
 const question = mongoose.model("question", questionModel)
 const answer = mongoose.model("answer", answerModel)
+const lottery = mongoose.model("lottery", lotteryModel)
 
 const getWeeks = (req, res) =>
 {
@@ -111,6 +113,35 @@ const addAnswer = (req, res) =>
     else res.status(400).send({message: "send question_id && user_answer && token!"})
 }
 
+const addForLottery = (req, res) =>
+{
+    const user_id = req.headers.authorization._id
+    const {book_id} = req.body
+    if (user_id && book_id)
+    {
+        question.find({book_id}, (err, questions) =>
+        {
+            if (err) res.status(400).send(err)
+            else
+            {
+                answer.find({is_correct: true, question_id: {$in: questions.reduce((sum, question) => [...sum, question.toJSON()._id], [])}}, (err, answers) =>
+                {
+                    if (questions.length === answers.length)
+                    {
+                        const newLottery = new lottery({user_id, book_id})
+                        newLottery.save((err, createdLottery) =>
+                        {
+                            if (err) res.status(400).send(err)
+                            else res.send(createdLottery)
+                        })
+                    }
+                    else res.status(403).send({message: "you weren't correct for all questions!"})
+                })
+            }
+        })
+    }
+    else res.status(400).send({message: "book_id && token!"})
+}
 
 // admin endpoints
 const addWeek = (req, res) =>
@@ -195,6 +226,7 @@ const weekController = {
     getBookById,
     getBookQuestions,
     addAnswer,
+    addForLottery,
     addWeek,
     addBook,
     addQuestion,

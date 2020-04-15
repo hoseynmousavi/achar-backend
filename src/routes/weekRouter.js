@@ -23,6 +23,9 @@ const weekRouter = (app) =>
 
     app.route("/answer")
         .post(weekController.addAnswer)
+
+    app.route("/lottery")
+        .post(weekController.addForLottery)
 }
 
 export default weekRouter
