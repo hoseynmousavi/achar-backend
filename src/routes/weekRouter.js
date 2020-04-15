@@ -18,8 +18,8 @@ const weekRouter = (app) =>
     app.route("/question")
         .post(weekController.addQuestion)
 
-    app.route("/question/:week_id")
-        .get(weekController.getWeekQuestions)
+    app.route("/question/:book_id")
+        .get(weekController.getBookQuestions)
 
     app.route("/answer")
         .post(weekController.addAnswer)
