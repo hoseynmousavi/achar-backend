@@ -144,7 +144,7 @@ const addForLottery = (req, res) =>
                         {
                             answer.find({user_id, is_correct: true, question_id: {$in: questions.reduce((sum, question) => [...sum, question.toJSON()._id], [])}}, (err, answers) =>
                             {
-                                if (questions.length === answers.length)
+                                if (questions.length > 0 && questions.length === answers.length)
                                 {
                                     if (new Date() > takenWeek.toJSON().end_date) res.status(201).send({message: "all right, but late!"})
                                     else
