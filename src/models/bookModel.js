@@ -19,7 +19,7 @@ const bookModel = new schema({
         type: String,
         required: "Enter picture!",
     },
-    file: {
+    summary: {
         type: String,
         required: "Enter file!",
     },

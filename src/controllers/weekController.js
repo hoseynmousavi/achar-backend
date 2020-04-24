@@ -193,10 +193,9 @@ const addBook = (req, res) =>
 {
     if (req.headers.authorization.role === "admin")
     {
-        const {week_id, name, description} = req.body
+        const {week_id, name, description, summary} = req.body
         const picture = req.files ? req.files.picture : null
-        const file = req.files ? req.files.file : null
-        if (week_id && name && picture && file)
+        if (week_id && name && picture && summary)
         {
             const pictureName = new Date().toISOString() + picture.name
             picture.mv(`media/pictures/${pictureName}`, (err) =>
@@ -204,30 +203,22 @@ const addBook = (req, res) =>
                 if (err) console.log(err)
                 else
                 {
-                    const fileName = new Date().toISOString() + file.name
-                    file.mv(`media/files/${fileName}`, (err) =>
+                    const newBook = new book({
+                        name,
+                        description,
+                        week_id, picture: `/media/pictures/${pictureName}`,
+                        summary,
+                        create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir")),
+                    })
+                    newBook.save((err, createdBook) =>
                     {
-                        if (err) console.log(err)
-                        else
-                        {
-                            const newBook = new book({
-                                name,
-                                description,
-                                week_id, picture: `/media/pictures/${pictureName}`,
-                                file: `/media/files/${fileName}`,
-                                create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir")),
-                            })
-                            newBook.save((err, createdBook) =>
-                            {
-                                if (err) res.status(400).send(err)
-                                else res.send(createdBook)
-                            })
-                        }
+                        if (err) res.status(400).send(err)
+                        else res.send(createdBook)
                     })
                 }
             })
         }
-        else res.status(400).send({message: "send week_id && name && picture && file!"})
+        else res.status(400).send({message: "send week_id && name && picture && summary!"})
     }
     else res.status(403).send({message: "don't have permission babe!"})
 }

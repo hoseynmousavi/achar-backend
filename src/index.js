@@ -34,4 +34,4 @@ verificationCodeRouter(app)
 notFoundRooter(app) // & at the end
 
 // Eventually Run The Server
-app.listen(data.port, () => console.log(`Achar Backend is Now Running on Port ${data.port}`))
+app.listen(data.port, () => console.log(`Backend is Now Running on Port ${data.port}`))
