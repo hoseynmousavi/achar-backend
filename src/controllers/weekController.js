@@ -84,12 +84,19 @@ const getBookQuestions = (req, res) =>
                     {
                         const questionsObject = questions.reduce((sum, question) => ({...sum, [question._id]: question.toJSON()}), {})
                         const answersObject = answers.reduce((sum, answer) => ({...sum, [answer.question_id]: answer.toJSON()}), {})
+                        let corrects_count = 0
+                        let wrongs_count = 0
                         questions.forEach(question =>
                         {
-                            if (answersObject[question._id]) questionsObject[question._id].user_answer = answersObject[question._id].user_answer
+                            if (answersObject[question._id])
+                            {
+                                questionsObject[question._id].user_answer = answersObject[question._id].user_answer
+                                if (answersObject[question._id].is_correct) corrects_count++
+                                else wrongs_count++
+                            }
                             else delete questionsObject[question._id].correct_answer
                         })
-                        res.send({book: takenBook.toJSON(), questions: Object.values(questionsObject), questions_count: questions.length, answers_count: answers.length})
+                        res.send({book: takenBook.toJSON(), questions: Object.values(questionsObject), questions_count: questions.length, answers_count: answers.length, corrects_count, wrongs_count})
                     })
                 }
             })
