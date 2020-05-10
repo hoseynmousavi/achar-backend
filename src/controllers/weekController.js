@@ -5,6 +5,7 @@ import questionModel from "../models/questionModel"
 import answerModel from "../models/answerModel"
 import lotteryModel from "../models/lotteryModel"
 import numberCorrection from "../functions/numberCorrection"
+import userController from "./userController"
 
 const week = mongoose.model("week", weekModel)
 const book = mongoose.model("book", bookModel)
@@ -176,6 +177,54 @@ const addForLottery = (req, res) =>
 }
 
 // admin endpoints
+const getForLottery = (req, res) =>
+{
+    if (req.headers.authorization.role === "admin")
+    {
+        const {create_persian_date} = req.body
+        if (create_persian_date)
+        {
+            let users = []
+            lotteryFunc(create_persian_date, users, res)
+        }
+        else res.send({message: "send proper fields"})
+    }
+    else res.status(403).send({message: "don't have permission babe!"})
+}
+
+const lotteryFunc = (create_persian_date, users, res) =>
+{
+    lottery.countDocuments({create_persian_date}, (err, count) =>
+    {
+        if (err) res.status(400).send(err)
+        else
+        {
+            const skip = Math.floor(Math.random() * count)
+            const limit = 1
+            lottery.find({create_persian_date}, null, {skip, limit}, (err, result) =>
+            {
+                if (err) res.status(400).send(err)
+                else
+                {
+                    if (users.indexOf(result[0].toJSON().user_id) === -1) users.push(result[0].toJSON().user_id)
+                    if (users.length < 4) lotteryFunc(create_persian_date, users, res)
+                    else
+                    {
+                        userController.getUsersFunc({condition: {_id: {$in: users}}, fields: "name phone"})
+                            .then(users =>
+                            {
+                                const usersObj = users.reduce((sum, user) => ({...sum, [user._id]: user}), {})
+                                users.forEach(item => usersObj[item._id].phone = usersObj[item._id].phone.slice(0, 6) + "***" + usersObj[item._id].phone.slice(9, 11))
+                                res.send(Object.values(usersObj))
+                            })
+                            .catch(err => res.status(400).send(err))
+                    }
+                }
+            })
+        }
+    })
+}
+
 const addWeek = (req, res) =>
 {
     if (req.headers.authorization.role === "admin")
@@ -255,6 +304,7 @@ const weekController = {
     getBookById,
     getBookQuestions,
     addAnswer,
+    getForLottery,
     addForLottery,
     addWeek,
     addBook,

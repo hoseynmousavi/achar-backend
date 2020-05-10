@@ -96,11 +96,24 @@ const userExist = ({phone}) =>
     })
 }
 
+const getUsersFunc = ({condition, fields, options}) =>
+{
+    return new Promise((resolve, reject) =>
+    {
+        user.find(condition, fields, options, (err, users) =>
+        {
+            if (err) reject(err)
+            else resolve(users)
+        })
+    })
+}
+
 const userController = {
     loginSignUp,
     phoneCheck,
     verifyToken,
     verifyTokenRoute,
+    getUsersFunc,
 }
 
 export default userController

@@ -25,6 +25,7 @@ const weekRouter = (app) =>
         .post(weekController.addAnswer)
 
     app.route("/lottery")
+        .get(weekController.getForLottery)
         .post(weekController.addForLottery)
 }
 
