@@ -181,7 +181,7 @@ const getForLottery = (req, res) =>
 {
     if (req.headers.authorization.role === "admin")
     {
-        const {create_persian_date} = req.body
+        const {create_persian_date} = req.params
         if (create_persian_date)
         {
             let users = []
