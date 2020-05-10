@@ -181,7 +181,7 @@ const getForLottery = (req, res) =>
 {
     if (req.headers.authorization.role === "admin")
     {
-        const {create_persian_date} = req.params
+        const {create_persian_date} = req.query
         if (create_persian_date)
         {
             let users = []
@@ -197,6 +197,7 @@ const lotteryFunc = (create_persian_date, users, res) =>
     lottery.countDocuments({create_persian_date}, (err, count) =>
     {
         if (err) res.status(400).send(err)
+        else if (count < 4) res.status(404).send({message: "not found"})
         else
         {
             const skip = Math.floor(Math.random() * count)
@@ -206,7 +207,7 @@ const lotteryFunc = (create_persian_date, users, res) =>
                 if (err) res.status(400).send(err)
                 else
                 {
-                    if (users.indexOf(result[0].toJSON().user_id) === -1) users.push(result[0].toJSON().user_id)
+                    if (users.indexOf(result[0].toJSON().user_id.toString()) === -1) users.push(result[0].toJSON().user_id.toString())
                     if (users.length < 4) lotteryFunc(create_persian_date, users, res)
                     else
                     {

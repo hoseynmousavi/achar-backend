@@ -25,10 +25,8 @@ const weekRouter = (app) =>
         .post(weekController.addAnswer)
 
     app.route("/lottery")
-        .post(weekController.addForLottery)
-
-    app.route("/lottery/:create_persian_date")
         .get(weekController.getForLottery)
+        .post(weekController.addForLottery)
 }
 
 export default weekRouter
