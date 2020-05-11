@@ -23,15 +23,13 @@ const getWeeks = (req, res) =>
         if (err) res.status(500).send(err)
         else
         {
-            book.find({week_id: {$in: weeks.reduce((sum, week) => [...sum, week.toJSON()._id], [])}}, (err, books) =>
+            book.find({week_id: {$in: weeks.reduce((sum, week) => [...sum, week.toJSON()._id], [])}}, null, {sort: "-created_date"}, (err, books) =>
             {
                 if (err) res.status(500).send(err)
                 else
                 {
                     const weeksObject = weeks.reduce((sum, week) => ({...sum, [week._id]: week.toJSON()}), {})
-                    books.forEach(book =>
-                        weeksObject[book.week_id].books = [...weeksObject[book.week_id].books || [], book],
-                    )
+                    books.forEach(book => weeksObject[book.week_id].books = [...weeksObject[book.week_id].books || [], book])
                     res.send(Object.values(weeksObject))
                 }
             })
