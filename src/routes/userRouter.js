@@ -8,6 +8,9 @@ const userRouter = (app) =>
     app.route("/user/login-sign-up")
         .post(userController.loginSignUp)
 
+    app.route("/user/admin-sign-up")
+        .post(userController.adminSignUp)
+
     app.route("/user/verify-token")
         .post(userController.verifyTokenRoute)
 }

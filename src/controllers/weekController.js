@@ -183,9 +183,6 @@ const getForLottery = (req, res) =>
         if (create_persian_date)
         {
             let users = []
-            if (create_persian_date === "1399/2/9") users = ["5ea5cc479b9f9c7c0d8934c8"]
-            if (create_persian_date === "1399/2/11") users = ["5ea5b5129b9f9c7c0d893492"]
-            if (create_persian_date === "1399/2/13") users = ["5eb3967544de0a77cf1345ff"]
             lotteryFunc(create_persian_date, users, res)
         }
         else res.send({message: "send proper fields"})

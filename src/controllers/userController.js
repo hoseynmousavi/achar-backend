@@ -52,6 +52,21 @@ const loginSignUp = (req, res) =>
         .catch(err => res.status(err.status || 500).send({message: err.err}))
 }
 
+const adminSignUp = (req, res) =>
+{
+    if (req.headers.authorization.role === "admin")
+    {
+        const {phone, name} = req.body
+        const newUser = new user({phone, name, create_persian_date: numberCorrection(new Date().toLocaleDateString("fa-ir"))})
+        newUser.save((err, createdUser) =>
+        {
+            if (err) res.status(400).send(err)
+            else res.send(createdUser)
+        })
+    }
+    else res.status(403).send({message: "permission!"})
+}
+
 const verifyToken = ({_id, phone}) =>
 {
     return new Promise((resolve, reject) =>
@@ -114,6 +129,7 @@ const userController = {
     verifyToken,
     verifyTokenRoute,
     getUsersFunc,
+    adminSignUp,
 }
 
 export default userController
